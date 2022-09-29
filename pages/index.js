@@ -1,9 +1,25 @@
 import Head from 'next/head'
+import { useState } from 'react'
 import { BiUserPlus } from "react-icons/bi";
+import Employee from '../models/Employee'
+import Form from '../components/Form';
+import Table from '../components/Table';
+import db from '../lib/dbConnect'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleChangeAction } from '../redux/reducer';
 
 
 
-export default function Home() {
+
+export default function Home( { employees }) {
+
+  const visible = useSelector((state) => state.app.client.toggleForm)
+  const dispatch = useDispatch()
+
+  const handler =  () => {
+    dispatch(toggleChangeAction())
+  }
+
   return (
     <section >
       <Head>
@@ -18,22 +34,38 @@ export default function Home() {
         </h1>
         <div className='container mx-auto flex justify-between py-5 border-b'>
           <div className='left flex gap-3'>
-            <button className='flex bg-indigo-500 border rounded-md text-white px-4 py-2 hover:bg-gray-50 hover:border-indigo-500 hover:text-indigo-500'>
+            <button onClick={handler} className='flex bg-indigo-500 border rounded-md text-white px-4 py-2 hover:bg-gray-50 hover:border-indigo-500 hover:text-indigo-500'>
               Add Employee<span className='px-1'><BiUserPlus size={23}></BiUserPlus></span>
             </button>
 
           </div>
-          {/* collapsable form */}
-
-          {/* table */}
-
-
+          
         </div>
+      {/* collapsable form */}
+      
+        {visible ? <Form /> : <></>}
+      
 
+      {/* table */}
+      <div className='container mx-auto'>
+        <Table employees={employees}/>
+      </div>
         
       </main>
 
      
     </section>
   )
+
+  
+  
+}
+export async function getServerSideProps() {
+  await db.dbConnect();
+  const employees = await Employee.find().lean();
+  return {
+    props: {
+      employees: employees.map(db.convertDocToObj),
+    },
+  };
 }

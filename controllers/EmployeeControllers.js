@@ -2,8 +2,7 @@
 import Employee from "../models/Employee"
 
  
-//GET all employees
- 
+//GET all employees = http://localhost:3000/api/employees
 const allEmployees = async (req, res) => {
    try {
     const Employees = await Employee.find()
@@ -23,17 +22,19 @@ const allEmployees = async (req, res) => {
  
      
 }
-// Create new Employee = /api/Employees
+// Create new Employee = http://localhost:3000/api/employees
  
 const newEmployee = async (req, res) => {
  
    try {
-       const employee = await Employee.create(req.body);
-      
-   res.status(200).json({
-       success: true,
-       employee
-   })
+    //    const employee = await Employee.create(req.body);
+    const formData = req.body;
+    if(!formData) return res.status(404).json({error: "Form Data Not Provided..!"})
+    Employee.create(formData, function(err, data ) {
+        res.status(200).json(data)
+               
+    })
+   
       
    } catch (error) {
        res.status(400).json({

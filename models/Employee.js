@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const employeeSchema = new mongoose.Schema(
   {
     employee_id: {type: Number, required: true, unique: true},
+    avatar: {type: String},
     first_name: {type: String},
     last_name: {type: String, required: true},
     email: {type: String, required: true, unique: true, lowercase: true},
@@ -13,6 +14,7 @@ const employeeSchema = new mongoose.Schema(
     commision_perecent: {type: Number},
     manager_id: {type: Number},
     department_id: {type: Number},
+    status: {type: String}
     
     
   },
